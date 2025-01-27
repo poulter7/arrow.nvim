@@ -3,6 +3,7 @@ local M = {}
 local config = require("arrow.config")
 local utils = require("arrow.utils")
 local json = require("arrow.json")
+local file_persist = require("arrow.persist")
 
 local ns = vim.api.nvim_create_namespace("arrow_bookmarks")
 M.local_bookmarks = {}
@@ -180,6 +181,10 @@ function M.remove(index, bufnr)
 	end
 
 	M.sync_buffer_bookmarks(bufnr)
+	-- sync buffer and file persistence
+	if M.local_bookmarks[bufnr] == nil or #M.local_bookmarks[bufnr] == 0 then
+		file_persist.remove(utils.get_buffer_path(bufnr))
+	end
 end
 
 function M.clear(bufnr)
@@ -188,6 +193,8 @@ function M.clear(bufnr)
 	M.local_bookmarks[bufnr] = {}
 	vim.api.nvim_buf_clear_namespace(bufnr, ns, 0, -1)
 	M.sync_buffer_bookmarks(bufnr)
+	-- sync buffer and file persistence
+	file_persist.remove(utils.get_buffer_path(bufnr))
 end
 
 function M.update(bufnr)
@@ -242,6 +249,8 @@ function M.save(bufnr, line_nr, col_nr)
 
 		M.sync_buffer_bookmarks(bufnr)
 	end
+	-- sync buffer and file persistence
+	file_persist.save(utils.get_buffer_path(bufnr))
 end
 
 function M.get_bookmarks_by(bufnr)
