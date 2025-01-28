@@ -129,7 +129,7 @@ function M.sync_buffer_bookmarks(bufnr)
 			file:write(json.encode(M.local_bookmarks[bufnr]))
 		end
 		file:flush()
-        file:close()
+		file:close()
 
 		M.last_sync_bookmarks[bufnr] = M.local_bookmarks[bufnr]
 		notify()
@@ -177,6 +177,7 @@ function M.clear(bufnr)
 	M.local_bookmarks[bufnr] = {}
 	vim.api.nvim_buf_clear_namespace(bufnr, ns, 0, -1)
 	M.sync_buffer_bookmarks(bufnr)
+	file_persist.remove(utils.get_buffer_path(bufnr))
 end
 
 function M.update(bufnr)
