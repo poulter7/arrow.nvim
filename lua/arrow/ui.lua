@@ -172,7 +172,10 @@ local function renderBuffer(buffer)
 		end
 
 		vim.keymap.set("n", "" .. displayIndex, function()
-			M.openFile(i)
+			M.openFile(i, false)
+		end, { noremap = true, silent = true, buffer = buf, nowait = true })
+		vim.keymap.set("n", string.upper("" .. displayIndex), function()
+			M.openFile(i, true)
 		end, { noremap = true, silent = true, buffer = buf, nowait = true })
 
 		if show_icons then
@@ -300,7 +303,7 @@ local function render_highlights(buffer)
 end
 
 -- Function to open the selected file
-function M.openFile(fileNumber)
+function M.openFile(fileNumber, skipAutoCmd)
 	local fileName = vim.g.arrow_filenames[fileNumber]
 
 	if vim.b.arrow_current_mode == "delete_mode" then
@@ -330,7 +333,9 @@ function M.openFile(fileNumber)
 		end
 
 		closeMenu()
-		vim.api.nvim_exec_autocmds("User", { pattern = "ArrowOpenFile" })
+		if not skipAutoCmd then
+			vim.api.nvim_exec_autocmds("User", { pattern = "ArrowOpenFile" })
+		end
 
 		if
 			config.getState("global_bookmarks") == true
