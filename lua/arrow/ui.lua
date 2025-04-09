@@ -172,10 +172,10 @@ local function renderBuffer(buffer)
 		end
 
 		vim.keymap.set("n", "" .. displayIndex, function()
-			M.openFile(i, false)
+			M.openFile(i, true)
 		end, { noremap = true, silent = true, buffer = buf, nowait = true })
 		vim.keymap.set("n", string.upper("" .. displayIndex), function()
-			M.openFile(i, true)
+			M.openFile(i, false)
 		end, { noremap = true, silent = true, buffer = buf, nowait = true })
 
 		if show_icons then
